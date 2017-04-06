@@ -21,11 +21,10 @@ import com.sooncode.api.background.entity.Control;
 import com.sooncode.api.background.entity.Project;
 import com.sooncode.api.background.entity.Role;
 import com.sooncode.api.background.entity.User;
-import com.sooncode.api.background.service.CompanyService;
-
+ 
 import com.sooncode.api.background.util.Md5;
-import com.sooncode.jdbc.SimpleDao;
 import com.sooncode.soonjdbc.page.Many2Many;
+import com.sooncode.soonjdbc.page.One2Many;
 import com.sooncode.soonjdbc.page.One2One;
 import com.sooncode.soonjdbc.service.JdbcService;
 
@@ -36,13 +35,6 @@ public class IndexController {
 	
 	@Autowired
 	private JdbcService jdbcService;
-	
-	
-	@Autowired
-	private CompanyService companyService;
-
-	//@Autowired
-	//private UserService userService;
 
 	private static Logger logger = Logger.getLogger("IndexController.class");
 
@@ -53,7 +45,7 @@ public class IndexController {
 	 * @param session
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+ 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView login(HttpServletRequest request, HttpSession session) {
 		String userName = request.getParameter("userName");
@@ -74,30 +66,38 @@ public class IndexController {
 
 			company.setCompanyId(newUser.getCompanyId());
 
-			company = companyService.companyDao.get(company);
+			company = jdbcService.get(company);
 
 			List<One2One> users = jdbcService.getPage(1L, 1L, newUser, new Role(), new Company()).getOne2One(); 
 				
 			 																				 
 			if (users != null && users.size() == 1) {
 				User thisUser = users.get(0).getOne(User.class);
+				Role thisRole = users.get(0).getOne(Role.class);
 				Control c =  new Control();
 				c.setUserId(thisUser.getUserId());
-			    List< Control> controls  = (List<Control>) SimpleDao.gets(c);	
-			    session.removeAttribute("controls");
-			    session.setAttribute("controls", controls);
-				session.removeAttribute("user");
-				session.setAttribute("user", thisUser);
+			    List<Control> controls  =  jdbcService.gets(c);	
+			    updateSession(session,"controls", controls);
+			    updateSession(session,"user", thisUser);
+			    updateSession(session,"company", company);
+			    updateSession(session,"role", thisRole);
+			    map.put("page", "introduction");
+			    return new ModelAndView("introduction/introduction", map);
 			}
 
-			map.put("page", "introduction");
-			return new ModelAndView("introduction/introduction", map);
 
 		}
 		return new ModelAndView("login/login", map);
 
 	}
 
+	private void updateSession(HttpSession session,String key,Object value){
+		    session.removeAttribute(key);
+		    session.setAttribute(key, value);
+	}
+	
+	
+	
 	@RequestMapping("/edIndex")
 	public ModelAndView edIndex(HttpServletRequest request, HttpSession session) {
 
@@ -105,10 +105,6 @@ public class IndexController {
 
 		Project p = new Project();
 		p.setProjectId("9B8AACB65185483DAADF914C26703FD9");
-
-		// Project project = projectServiceBG.getProjectByProjectId(p);
-
-		// map.put("project", project);
 
 		return new ModelAndView("ed_index", map);
 	}
@@ -120,10 +116,6 @@ public class IndexController {
 
 		Project p = new Project();
 		p.setProjectId("9B8AACB65185483DAADF914C26703FD9");
-
-		// Project project = projectServiceBG.getProjectByProjectId(p);
-
-		// map.put("project", project);
 
 		logger.info(p);
 		return new ModelAndView("index", map);
@@ -188,21 +180,24 @@ public class IndexController {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		User user = (User) session.getAttribute("user");
+		Role role = (Role) session.getAttribute("role");
 		// 管理员
 
-		if (user.getRole().getRoleCode().equals("ADMIN")) { // 管理员
+		if (role.getRoleCode().equals("ADMIN")) { // 管理员
 			Company company = new Company();
 			company.setCompanyId(user.getCompanyId());
-			company = companyService.companyDao.getPager(1L, 10L, company, new Project()).getEntity();
+			One2Many<Company, Project> companyAndProject = jdbcService.getPage(1L, 10L, company, new Project()).getOne2Many();
+			company = companyAndProject.getOne();
+			
 			List<Project> projects;
 			if (company == null) {
 				projects = null;
 			} else {
-				projects = company.getProjects();
+				projects = companyAndProject.getMany();
 
 			}
 			map.put("projects", projects);
-		} else if (user.getRole().getRoleCode().equals("GENERAL")) {// 普通用户
+		} else if (role.getRoleCode().equals("GENERAL")) {// 普通用户
 			Control control = new Control();
 			control.setUserId(user.getUserId());
 			Many2Many<User, Control, Project> ucp = jdbcService.getPage(1L, 10L, user, new Control(), new Project()).getMany2Many();

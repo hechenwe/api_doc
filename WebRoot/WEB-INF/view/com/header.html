@@ -10,7 +10,7 @@
 		<font   class=" " size="2">入门</font>  
 	    </#if>
 	</a> 
-	<#if user.role.roleCode == "ADMIN">
+	<#if role.roleCode == "ADMIN">
 	<a   href="../companyController/user.html" class=" navbar-brand">
 	    <#if page == "user">
 		<font   class=" btn btn-default btn-xs " size="2">用户管理</font>
@@ -43,7 +43,7 @@
 
 <div class="nav navbar-top-links navbar-right">
    <a class=" navbar-brand" >
-		<font size="2"><#if user.company ??> ${user.company.companyName} </#if> &nbsp;&nbsp;&nbsp;  ${user.userName} &nbsp;&nbsp;&nbsp; ${user.role.roleName} </font>
+		<font size="2"><#if  company ??> ${ company.companyName} </#if> &nbsp;&nbsp;&nbsp;  ${user.userName} &nbsp;&nbsp;&nbsp; ${role.roleName} </font>
 	</a>
 	
 	<a class=" navbar-brand"></a> <!-- 占位符 -->

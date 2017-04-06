@@ -1,6 +1,4 @@
 package com.sooncode.api.background.entity;
- 
-import java.util.List;
 
 
 /**
@@ -48,17 +46,7 @@ public class User implements java.io.Serializable{
     private java.util.Date registerDate; 
     
     
-    /***/
-	private Role role ;
-	
-	
-    /**公司编号*/
-	private Company company ;
-	
-	 
- 
-    /** 项目编号 */
-	private  List<Project> projects ;
+    
 	 
 	 	 
   
@@ -171,51 +159,7 @@ public class User implements java.io.Serializable{
    //----------------------------------------------------------------
    
    
-  
-    /***/ 
-    public Role getRole(){  
-      return this.role;  
-    }  
-    /***/
-    public void setRole(Role role){  
-      this.role = role;  
-    } 
-    
-    
-    //----------------------------------------------------------------
-  
-  
-    /**公司编号*/ 
-    public Company getCompany(){  
-      return this.company;  
-    }  
-    /**公司编号*/
-    public void setCompany(Company company){  
-      this.company = company;  
-    } 
-    
-    
-    //----------------------------------------------------------------
-  
-  
- 
- 
    
- 
- 
- 
-
-	/**项目编号*/ 
-    public List<Project> getProjects(){  
-      return this.projects;  
-    }  
-    /**项目编号*/
-    public void setProjects(List<Project> projects){  
-      this.projects = projects;  
-    } 
-    
-    
-    //----------------------------------------------------------------
     
      	 
 

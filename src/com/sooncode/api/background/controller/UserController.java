@@ -69,7 +69,7 @@ public class UserController {
 
 		Email e = new Email();
 		e.setEmail(email);
-		List<Email> emails = emailService.emailDao.getPager(1L,1L,e).getLists();
+		List<Email> emails = jdbcService.gets(e);
 		if (emails.size() == 1) {
 			e = emails.get(0);
 			if (code.equals(e.getCode() + "")) {// 验证码有效
@@ -81,7 +81,7 @@ public class UserController {
                 //分配权限
 				Role role = new Role();
 				role.setRoleCode("ADMIN");
-				List<Role> roles = roleService.roleDao.getPager(1L,1L,role).getLists();
+				List<Role> roles = jdbcService.gets(role);
 				if (roles.size() == 1) {
 					role = roles.get(0);
 				}
@@ -93,20 +93,16 @@ public class UserController {
 				c.setCompanyId(uuid);
 				c.setCompanyName(companyName);
 				
-				companyService.companyDao.save(c);
+				jdbcService.save(c);
 				
 				user.setCompanyId(uuid);
-				user.setCompany(c);
 				user.setRegisterDate(new Date());
-				long n = userService.userDao.save(user);
-
-				
-				
-				
+				long n = jdbcService.save(user);
 				if (n == 1) {
-					user.setRole(role);
 					HttpSession session = request.getSession();
 					session.setAttribute("user", user);
+					session.setAttribute("role", role);
+					session.setAttribute("company", c);
 					return user.getUserId();
 				} else {
 					return "0";// 失败
