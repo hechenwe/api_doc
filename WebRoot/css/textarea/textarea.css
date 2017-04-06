@@ -1,0 +1,17 @@
+
+.textarea { 
+	display: block;
+	margin:0 auto;
+	overflow: hidden; 
+	width:auto; 
+	font-size: 6px;
+	height: 50px; 
+	line-height: 12px;
+	padding:2px; 
+	 resize: vertical; 
+}
+textarea {
+	outline: 0 none;
+	border-color: rgba(82, 168, 236, 0.8);
+	/* box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6); */
+}

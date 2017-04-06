@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../images/I.png"  type="image/x-icon">
+<title>编辑接口文档</title> 
+<#include "../com/css.html"/> <#-- 引入css 文件 -->
+<style type="text/css">
+.main-top2 {
+	position: fixed;
+	z-index: 999;
+	top:550px;
+	right:20px;
+}
+</style>
+</head>
+<body  oncontextmenu=self.event.returnValue=false > <#-- 禁用浏览器右键菜单 -->
+
+<input type="hidden" id="input_projectId" value="${project.projectId}">
+
+	<div id="wrapper">
+		<nav id="nav" class="navbar navbar-default navbar-static-top main-top" role="navigation" style="margin-bottom: 0">
+			<#include "../com/header.html"/>
+			
+		</nav>
+	<div   class="col-lg-12">
+	  
+	  <div class="col-lg-2"></div> 
+      <div class="main-top1">
+        <div style="height:20px;" class="col-lg-12 "></div>	 
+        <div  id="div_ed_left " style=" height:1000px; overflow: auto;" class="col-lg-12  "  >
+ 	    <#include "../com/left.html"/>   
+        </div>
+      </div>
+    <div class="col-lg-10">
+		<div   id="page-wrapper">
+			<#include "../ed/ed_main.html"/>	
+		</div>
+	</div>
+</div>	
+
+
+<#-- 右键菜单 -->
+<div  id="context-menu" data-key="">
+  <ul style="width:200px;" id = "context-menu-ul" class="dropdown-menu" role="menu">
+  
+  </ul>
+</div>
+
+<#-- 右键菜单  菜单选项-->
+<ul id = "module-lis" class="dropdown-menu" role="menu">
+    <li><a onclick="editModule();" >修改模块</a></li>
+    <li><a onclick="deleteModule();"  >删除模块 </a></li>
+    <li><a onclick="toAddInterface();" >添加接口</a></li>
+    <li id="menu-up"><a onclick="upModule();">向上移动</a></li>
+    <li id="menu-down"><a onclick="downModule();">向下移动</a></li>
+  </ul>
+
+    <#--引入JS文件-->
+	<#include "../com/js.html"/>
+	<script type="text/javascript" src="../js/bootstrap-contextmenu.js"></script>
+	<script type="text/javascript">
+	     //右键菜单 
+	     $('.context').contextmenu();
+	      
+	     //右键菜单 --接口
+	       $('.b').mousedown(function(e){ 
+	          if(3 == e.which){ //这 是右键单击事件
+	    	    
+	        	  var lis = $("#module-lis").html();
+	        	  var ul = $("#context-menu-ul");
+	        	  ul.empty();
+	        	  ul.append(lis);
+	        	  
+	        	  var key = $(this).attr("data-key");
+	      		  $("#context-menu").attr("data-key",key);
+	      		
+	        	  var dataKeys = key.split(":");
+	        	  
+	        	  var moduleId = dataKeys[0];    
+	        	  var up = dataKeys[2];    
+	        	  var down = dataKeys[3];  
+	        	  $("#menu-up").removeAttr("hidden");
+	        	  $("#menu-down").removeAttr("hidden");
+	        	  if(up=="0"){
+	        		$("#menu-up").attr("hidden","hidden");
+	        	  }
+	        	  if(down=="0"){
+	        		  $("#menu-down").attr("hidden","hidden");
+	        	  }
+	          } 
+	        });  
+	     
+		//-------------------------------------------------------------------------
+		function hiddenDiv(divId){
+			$("#"+divId).toggleClass('div-display');
+		}
+        
+		//------------------------------打开/关闭节点----------------------------------------
+
+		function openOrClose(type, id) {
+			var bool = $("#" + id).children().children("span").hasClass("open-span");
+			if (bool) {
+				$("#" + id).find("li ul").empty();
+			} else {
+				//alert("haha");
+				getData(type, id);
+			}
+			$("#" + id).children().children("span").toggleClass('open-span');//改变三角符号的现状
+		}
+		 
+		//-------------------------------------------------------------------------------------------------------------------------------------
+		
+       
+		
+		
+		//-------------------------------异步加载---------------------------------------
+		function getData(type, id) {
+			var url = "";
+			if (type == "project") { //加载项目下的模块数据
+				url = "../module/getModules.html?projectId=" + id;
+				$.get(url, function(data) {
+					$.each(data.modules, function(i, object) {
+						var moduleId = object.moduleId;
+						var moduleName = object.moduleName;
+						var html = '<ul id="'+ moduleId +'">' + '<li><span onclick="openOrClose(\'module\',\'' + moduleId + '\');"></span><a ondblclick="openOrClose(\'module\',\'' + moduleId + '\');" ><img alt="模块名称" src="../images/M.png"> ：' + moduleName + '</a> ' + '</ul>';
+						$("#" + id).children("li").append(html);
+					});
+				})
+			} else if (type == "module") {//加载模块下的接口数据
+				url = "../interface/getInterfaces.html?moduleId=" + id;
+				$.get(url, function(data) {
+					$.each(data.interfaces, function(i, object) {
+						var interfacId = object.interfacId;
+						var interfacName = object.interfacName;
+						var html = '<ul id="'+ interfacId +'">' + '<li><span onclick="openOrClose(\'interfacs\',\'' + interfacId + '\');"></span><a ondblclick="openOrClose(\'interfacs\',\'' + interfacId + '\');" ><img alt="接口名称" src="../images/I.png"> ' + interfacName + '</a> <img src="../images/add-P2.png" onclick="toAddParameter(\'' + interfacId + '\');"></img>' + '</ul>';
+						$("#" + id).children("li").append(html);
+					});
+				})
+			}else if (type == "interface"){//加载接口下的参数数据
+				url = "../parameter/getParameters.html?interfacId=" + id;
+				$.get(url, function(data) {
+					$.each(data.interfaces, function(i, object) {
+						var parameterId = object.parameterId;
+						var parameterName = object.parameterName;
+						var html = '<ul id="'+ interfacId +'">' + '<li><span onclick="openOrClose(\'interfacs\',\'' + interfacId + '\');"></span><a ondblclick="openOrClose(\'interfacs\',\'' + interfacId + '\');" >参数名称：' + interfacName + '</a> <img src="../images/add-P.png" onclick="toAddParameter(\'' + interfacId + '\');"></img>' + '</ul>';
+						$("#" + id).children("li").append(html);
+					});
+				})
+			}
+		}
+		
+		
+		//---------------   展开 模块    --------------------
+		function openOrColseModule(moduleId){
+			var imgId = "img_module_"+moduleId;
+			var bool = $("#module"+moduleId).hasClass('div-display');
+			if(bool){ 
+				var string = $("#module"+moduleId).html().trim();
+				if(string==""){
+			   
+				$.get("../interface/getInterfaces.html?moduleId="+moduleId,function (data){
+					$("#module"+moduleId).append(data);
+				})
+					
+				}
+				$("#"+imgId).attr("src","../images/down.png");
+			}else{
+				$("#"+imgId).attr("src","../images/left.png");
+			}
+			$("#module"+moduleId).toggleClass('div-display');
+		}
+		//------------------ 展开 接口 -----------------
+		function openOrColseInterfac(interfacId){
+			var imgId = "img_interfac_"+interfacId;
+			
+			var bool = $("#interfac"+interfacId).hasClass('div-display');
+			if(bool){ 
+				var string = $("#interfac"+interfacId).html().trim();
+				if(string==""){
+				$.get("../interface/getInterfac.html?interfacId="+interfacId,function (data){
+					$("#interfac"+interfacId).append(data);
+				})
+				}
+				$("#"+imgId).attr("src","../images/down.png");
+			}else{
+				$("#"+imgId).attr("src","../images/left.png");
+			}
+			$("#interfac"+interfacId).toggleClass('div-display');
+		}
+		
+		//-----------------------------------
+		function openOrCloseParameter(interfacId ,imgId){
+			var bool = $("#parameter"+interfacId).hasClass('div-display');
+			if(bool){ 
+				$("#"+imgId).attr("src","../images/down.png");
+			}else{
+				$("#"+imgId).attr("src","../images/left.png");
+			}
+			$("#parameter"+interfacId).toggleClass('div-display');
+		}
+		//-----------------------------------
+		function openOrCloseExample(interfacId ,imgId){
+			var bool = $("#example"+interfacId).hasClass('div-display');
+			if(bool){ 
+				
+				$("#"+imgId).attr("src","../images/down.png");
+			}else{
+				$("#"+imgId).attr("src","../images/left.png");
+			}
+			$("#example"+interfacId).toggleClass('div-display');
+		}
+		//-----------------------------------
+		function openOrCloseTry(interfacId,imgId){
+			var bool = $("#try"+interfacId).hasClass('div-display');
+			if(bool){ 
+				$("#"+imgId).attr("src","../images/down.png");
+			}else{
+				$("#"+imgId).attr("src","../images/left.png");
+			}
+			$("#try"+interfacId).toggleClass('div-display');
+		}
+		
+		// -------------------------------------
+		
+		function changeUrl(interfacId){
+			$("#form"+interfacId).attr("action",$("#input"+interfacId).val());
+		}
+		 
+	</script>
+</body>
+</html>

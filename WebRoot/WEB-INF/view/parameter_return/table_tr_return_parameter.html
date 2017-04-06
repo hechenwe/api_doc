@@ -1,0 +1,27 @@
+<tr   id="${p.parameterId}" class="parameter_return_tr_js"  data-key="${p.exampleId}:${p.parameterId}" data-toggle="context" data-target="#context-menu" height="20px">
+					<td>${p.parameterName}</td>
+					<td>${p.parameterCode}</td>
+					<td>${p.parameterDataType}</td>
+                    <#if p.parameterDataType == "String">
+					<td>[${p.minLength},${p.maxLength}]</td>
+					<#else>
+					<td></td>
+					</#if>
+					<td>
+					<#if p.parameterExample?length gt 11 >
+					<a data-toggle="popover" data-placement="top" data-content="${p.parameterExample}" >
+					${p.parameterExample?substring(0,5)}...</a>
+					<#else>
+					${p.parameterExample}
+					</#if>
+					</td> 
+					<#if p.isMust =="1">
+					<td>必须</td> 
+					<#else>
+					<td>可选</td>
+					</#if>
+					<td>
+					    
+					</td>
+					 
+				</tr>

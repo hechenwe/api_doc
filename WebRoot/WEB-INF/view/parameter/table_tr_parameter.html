@@ -1,0 +1,24 @@
+
+
+
+<tr class = "tr_js" data-key="${parameter.interfacId}:${parameter.parameterId}" data-toggle="context" data-target="#context-menu" id = "tr-${parameter.parameterId}">
+					 
+		<td><small>${parameter.parameterName}</small></td>
+		<td><small>${parameter.parameterCode}</small></td>
+
+		<td><small>${parameter.parameterDataType}</small></td>
+		<td><small><#if parameter.minLength==parameter.maxLength>${parameter.minLength}<#else>[${parameter.minLength},${parameter.maxLength}]</#if>  </small></td>
+		 
+
+		<td> 
+		<#if parameter.parameterExample?length gt 11 >
+		<a data-toggle="popover" data-placement="top" data-content="${parameter.parameterExample}" >
+		${parameter.parameterExample?substring(0,5)}...</a>
+		<#else>
+		${parameter.parameterExample}
+		</#if>
+		</td> 
+		 
+		<td>
+		</td> 
+</tr>

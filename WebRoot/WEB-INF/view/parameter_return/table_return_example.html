@@ -1,0 +1,159 @@
+<div class="">
+	<#if interfac.examples ??> 
+	<#list interfac.examples as example> 
+	 
+	 <textarea style="width:99.4%" id = "${example.exampleId}"  data-key="${interfac.interfacId}:${example.exampleId}" data-toggle="context" data-target="#context-menu"  class="form-control-textarea pre_js textarea" rows="5">${example.exampleContent!}</textarea> 
+	 <br>
+     
+	<!--  添加返回值参数 -->
+
+	<div style="margin-left: 3px"  class="table-responsive">
+
+		<!------------------------ 返回值参数---------------------------- -->
+
+
+		<h6>参数说明:</h6>
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th><small>代码</small></th>
+					<th><small>名称</small></th>
+					<th width="6%"><small>类型</small></th>
+
+					<th width="6%"><small>长度</small></th>
+					 
+					<th><small>示例</small></th>
+
+					<th width="8%"><small>是否必须</small></th>
+					<th><small>域</small></th>
+					<!-- <th width="6%"><small>操作</small></th> -->
+					 
+				</tr>
+			</thead>
+			<tbody id = "parameter_return${example.exampleId}">
+				<#list example.parameterReturs as p >
+
+				<tr id="${p.parameterId}" class="parameter_return_tr_js"  data-key="${example.exampleId}:${p.parameterId}" data-toggle="context" data-target="#context-menu" height="20px">
+					<td><small>${p.parameterCode}</small></td>
+					<td><small>${p.parameterName}</small></td>
+					<td><small>${p.parameterDataType}</small></td>
+                    <#if p.parameterDataType == "String">
+					<td><small>[${p.minLength},${p.maxLength}]</small></td>
+					<#else>
+					<td></td>
+					</#if>
+					<td>
+					<#if p.parameterExample?length gt 11 >
+					<a data-toggle="popover" data-placement="top" data-content="${p.parameterExample}" >
+					${p.parameterExample?substring(0,5)}...</a>
+					<#else>
+					<small>${p.parameterExample}</small>
+					</#if>
+					</td> 
+					<#if p.isMust =="1">
+					<td><small>必须</small></td> 
+					<#else>
+					<td><small>可选</small></td>
+					</#if>
+					<td>
+					   <#if p.valueExplains?size !=0 >
+						<div style="margin-left: 0px; margin-right: 0px;" class="col-lg-10">
+							<select id="select_${p.parameterId}" class="form-control input-sm "> 
+							<#list p.valueExplains as ve>
+								<option>${ve.value} : ${ve.valueMeaning}</option> 
+								</#list>
+							</select>
+						</div> 
+						</#if>
+					</td>
+					 
+				</tr>
+				</#list>
+			</tbody>
+		</table>
+	 
+
+	</div>
+	 
+	<div id="${example.exampleId}-div" class="col-lg-12">
+	<#--  添加 更新 返回值参数DIV模块位置  -->
+	</div>
+	
+	<!------------------------ 返回值参数---------------------------- -->
+	<#include "../value_explain/add_value_explain.html"/>
+	<!-- 添加返回参数 值说明-->
+    </div>
+	</#list> 
+	</#if>
+</div>
+
+
+<ul id="return-ul-id" hidden="hidden">
+	<li><a onclick="updateExample();">保存</a></li>
+	<!-- <li><a onclick="toUpdateExample();">修改</a></li> -->
+	<!-- <li><a onclick="deleteExample();">删除</a></li> -->
+	<li><a onclick="showAddParameterReturn();">添加参数说明</a></li>
+</ul>
+
+
+<ul id="parameter-return-ul-id" hidden="hidden">
+	 
+	<li><a onclick="toUpdateParameterReturn();">修改</a></li>
+	<li><a onclick="deleteParameterReturn();">删除</a></li>
+	<li><a onclick="addValueExplain();">添加域</a></li>
+</ul>
+
+
+
+<script type="text/javascript">
+function returnMousedown() {
+	 
+	$('.pre_js').mousedown(function(e) {
+		 
+		if (3 == e.which) { //这 是右键单击事件
+			var lis = $("#return-ul-id").html();
+			var ul = $("#context-menu-ul");
+			ul.empty();
+			ul.append(lis);
+	
+			var key = $(this).attr("data-key");
+			$("#context-menu").attr("data-key", key);
+	
+		}
+	});
+}
+
+
+function parameterReturnMousedown() {
+	 
+	$('.parameter_return_tr_js').mousedown(function(e) {
+		 
+		if (3 == e.which) { //这 是右键单击事件
+			var lis = $("#parameter-return-ul-id").html();
+			var ul = $("#context-menu-ul");
+			ul.empty();
+			ul.append(lis);
+	
+			var key = $(this).attr("data-key");
+			$("#context-menu").attr("data-key", key);
+	
+		}
+	});
+}
+
+returnMousedown();
+parameterReturnMousedown();
+
+//-------------------------------------显示添加返回参数说明-------------------------------------------
+function addValueExplain(){
+ 
+	var dataKeys = $("#context-menu").attr("data-key").split(":");
+	var exampleId = dataKeys[0];
+	var parameterId = dataKeys[1];
+	$("#valueExplain"+exampleId).toggleClass('div-display');
+	$("#"+exampleId+"valueExplainParameterId").val(parameterId);
+	 
+}
+
+
+</script>

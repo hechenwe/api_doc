@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../images/I.png" type="image/x-icon">
+<title>自定义调试</title> <#include "../com/css.html"/>
+<style type="text/css">
+img {
+	margin-bottom: 2px;
+	height: 14px;
+	width: 14px;
+}
+</style>
+</head>
+<body>
+
+	<nav class="navbar navbar-default navbar-static-top main-top " role="navigation" style="margin-bottom: 0;"><#include "../com/header.html"/></nav>
+
+	<div class="col-lg-12">
+		<div style="height: 55px;" class="col-lg-12"></div>
+		<div class="col-lg-12">
+			<div class="col-lg-1"></div>
+			<div class="col-lg-11">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<form role="form">
+								<input type="hidden" id="moduleId" class="form-control">
+								<div class="form-group">
+
+									<input id="url_fist" class="form-control" placeholder="URL">
+									<p class="help-block"></p>
+								</div>
+
+								<div class="form-group">
+									<label>请求方式</label> <label class="radio-inline"> <input type="radio" name="request_type" value="POST" checked>POST
+									</label> <label class="radio-inline"> <input type="radio" name="request_type" value="GET">GET
+									</label>
+
+								</div>
+								<div class="form-group">
+									<label>参数类型</label> <label class="radio-inline""> <input type="radio" name="parameter_type" value="FORM" checked onclick="changeParaType();">表单
+									</label> <label class="radio-inline"> <input type="radio" name="parameter_type" value="JSON" onclick="changeParaType();">JSON
+									</label>
+
+								</div>
+								<div class="form-group" id="div_table">
+									
+									<div class="table-responsive">
+
+										<table id="table" class="div-display table table-striped table-bordered table-hover">
+											<thead>
+												<tr>
+													<th width="45%">key</th>
+													<th width="45%">value</th>
+													<th width="3%">操作</th>
+												</tr>
+											</thead>
+											<tbody id="tbody">
+											</tbody>
+										</table>
+									</div>
+									<!-- <div style="height: 5px;"></div> -->
+									<a class="btn btn-primary btn-xs" onclick="addParameters();">添加参数</a>
+
+								</div>
+
+								<div id="div_textarea" class="div-display">
+								
+								
+									<textarea id = "textarea" style="width: 100%" class="textarea">
+								
+								    </textarea>
+
+								</div>
+								<div style="height: 20px;"></div>
+								<div class="form-group">
+									<button type="button" onclick="go();" class="btn btn-primary">提交请求</button>
+								</div>
+								<div class="form-group">
+									<label>返回结果</label>
+									<div style="border: 1px solid #E4E1E1; height: 230px; width: 100%;">
+										<iframe frameborder="0" border="0" ; marginwidth="0" marginheight="0" style="width: 100%; height: 400px" id="id_iframe" name="id_iframe"></iframe>
+									</div>
+									<p class="help-block"></p>
+								</div>
+
+							</form>
+							<form id="form" target="id_iframe" enctype='application/json'></form>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+
+
+
+
+	<#include "../com/js.html"/>
+
+	<script type="text/javascript">
+		//-----------------------------------------调试接口---------------------------------------------------------------
+		var n = 0;
+		//添加参数
+		function addParameters() {
+			$("#table").removeClass("div-display");
+
+			var tr = '<tr id = "tr'+n+'"><td><input class="form-control" style="width:100%" type="text" id="" value=""></input></td><td><input class="form-control"  style="width:100%" type="text" id="" value=""></input></td><td><a class="btn btn-danger btn-sm" onclick="delete_tr(' + n + ')">删除</a></td></tr>';
+			$("#tbody").append(tr);
+			n = n + 1;
+		}
+		//删除次数
+		function delete_tr(m) {
+			$("#tr" + m).remove();
+			n = n - 1;
+			if (n == 0) {
+				$("#table").addClass("div-display");
+			}
+		}
+
+		//参数类型 切换
+
+		function changeParaType() {
+
+			var paraType = $('input[name="parameter_type"]:checked').val();
+			if (paraType == "JSON") {
+				$("#div_textarea").removeClass("div-display");
+				$("#div_table").addClass("div-display");
+			} else {
+				$("#div_textarea").addClass("div-display");
+				$("#div_table").removeClass("div-display");
+			}
+
+		}
+
+		//提交请求
+		function go() {
+			var url = $("#url_fist").val();
+			var paraType = $('input[name="parameter_type"]:checked').val();
+			var request_type = $('input[name="request_type"]:checked').val();
+			if (paraType == "JSON") {
+				$("#form").attr("action", "../spanRequestController/request.html").attr("method", "POST");
+				var jsonStringData = $("#textarea").val();
+				jsonStringData= $.trim(jsonStringData);
+				var jsonString = '<input  type="hidden"  name="jsonString" value=\''+ jsonStringData +'\'>';
+				var url = '<input  type="hidden"  name="url" value="'+ url +'">';
+				var requestType = '<input  type="hidden"  name="requestType" value="'+ request_type +'">';
+				$("#form").append(jsonString);
+				$("#form").append(requestType);
+				$("#form").append(url);
+			} else {
+				$("#form").attr("action", url).attr("method", request_type);
+				$("#form").empty();
+				$("#tbody tr").each(function(index) {
+					var name = $(this).children().eq(0).children().first().val();
+					var value = $(this).children().eq(1).children().first().val()
+					var input = '<input  type="hidden"  name="'+ name +'" value="'+ value +'">';
+					$("#form").append(input);
+				});
+			}
+			if (url != "") {
+				$("#form").submit();
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<form role="form">
+							<input type="hidden" id="moduleId" value="${interfac.moduleId!}" >
+							<input type="hidden" id="add_up_interfacId" value="${interfac.interfacId!}" >
+							<input type="hidden" id="weight" value="${interfac.weight!}" >
+							<div class="form-group">
+								<label>接口名称</label> <input id="interfacName" value="${interfac.interfacName!}" class="form-control">
+								<p class="help-block"></p>
+							</div>
+							 
+							<div class="form-group">
+								<label>接口链接</label> <input id="url" class="form-control" value="${interfac.url!}" placeholder=" ">
+							</div>
+
+							<div class="form-group">
+								<label>请求方式</label> 
+								<#if interfac.requestType ??>
+								
+								 <#if interfac.requestType=="POST">
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType" checked="checked" value="POST" >POST
+									</label> 
+								 <#else>
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType"  value="POST" >POST
+									</label> 
+								 </#if>
+								 
+								<#if interfac.requestType=="GET">
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType" checked="checked" value="GET">GET
+									</label>
+								 <#else>
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType" value="GET">GET
+									</label>
+								 </#if>
+								 
+								<#if interfac.requestType=="PUT">
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType" checked="checked" value="PUT">PUT
+									</label>
+								 <#else>
+									<label class="radio-inline"> 
+									<input type="radio" name="requestType" value="PUT">PUT
+									</label>
+								 </#if>
+								<#if interfac.requestType=="DELETE">
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="DELETE">DELETE
+								</label>
+								 <#else>
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="DELETE">DELETE
+								</label>
+								 </#if>
+								<#if interfac.requestType=="HEAD">
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="HEAD">HEAD
+								</label>
+								 <#else>
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="HEAD">HEAD
+								</label>
+								 </#if>
+								<#if interfac.requestType=="CONNECT">
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="CONNECT">CONNECT 
+								</label>
+								 <#else>
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="CONNECT">CONNECT 
+								</label>
+								 </#if>
+								<#if interfac.requestType=="OPTIONS">
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="OPTIONS">OPTIONS 
+								</label>
+								 <#else>
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="OPTIONS">OPTIONS 
+								</label>
+								 </#if>
+								<#if interfac.requestType=="TRACE">
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="TRACE"> TRACE
+								</label>
+								 <#else>
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="TRACE"> TRACE
+								</label>
+								 </#if>
+								
+								<#else>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" checked="checked" value="POST" >POST
+								</label> 
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="GET">GET
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="PUT">PUT
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="DELETE">DELETE
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="HEAD">HEAD
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="CONNECT">CONNECT 
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="OPTIONS">OPTIONS 
+								</label>
+								
+								<label class="radio-inline"> 
+								<input type="radio" name="requestType" value="TRACE"> TRACE
+								</label>
+								
+								</#if>
+								 
+
+							</div>
+							<div class="form-group">
+								<label>风格</label> 
+								<label class="radio-inline"> 
+								<input type="radio" name="style" value="GENERAL" checked="checked">常规
+								</label> 
+								<label class="radio-inline"> 
+								<input type="radio" name="style" value="REST">REST
+								</label>
+							</div>
+							<div class="form-group">
+								<label>参数格式</label> <label class="radio-inline"> <input type="radio" name="parameterFormat" id="optionsRadiosInline1" value="GENERAL" checked="checked">普通
+								</label> <label class="radio-inline"> <input type="radio" name="parameterFormat" id="optionsRadiosInline2" value="JSON">JSON
+								</label> <label class="radio-inline"> <input type="radio" name="parameterFormat" id="optionsRadiosInline2" value="FILE">含文件上传
+								</label>
+
+							</div>
+							<div class="form-group">
+								<label>返回数据格式</label> <label class="radio-inline"> <input type="radio" name="returnDataType" checked="checked" value="JSON">JSON
+								</label> <label class="radio-inline"> <input type="radio" name="returnDataType" value="TEXT">TEXT
+								</label> <label class="radio-inline"> <input type="radio" name="returnDataType" value="XML">XML
+								</label>
+
+							</div>
+
+							<button type="button" onclick="saveInterfac();" class="btn btn-default">确定</button>
+							<button type="button" onclick="cancelSaveInterface();" class="btn btn-default">取消</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+ 
+ 

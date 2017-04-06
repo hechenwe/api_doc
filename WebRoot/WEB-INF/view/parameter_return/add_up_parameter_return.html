@@ -1,0 +1,80 @@
+<div class="panel panel-default  ">
+		<div class="panel-heading">返回值参数</div>
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-lg-12">
+					<form role="form">
+						<div class="form-group">
+						    <input type="hidden" id="${pr.exampleId}parameterId" value="${pr.parameterId!}">
+							<input class="form-control" id="${pr.exampleId}parameterName" placeholder="参数名称" value="${pr.parameterName!}">
+						</div>
+						<div class="form-group">
+							<input class="form-control" id="${pr.exampleId}parameterCode" placeholder="参数代码" value="${pr.parameterCode!}">
+						</div>
+						<div class="form-group">
+
+							<select onchange="chooseDataType(this,'${pr.exampleId}');" class="form-control" id="${pr.exampleId}parameterDataType" placeholder="数据类型">
+								<option value="String">String</option>
+								<option value="int">int</option>
+								<option value="Date">Date</option>
+								<option value="bool">bool</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<input class="form-control" id="${pr.exampleId}minLength" placeholder="最小长度" value="${pr.minLength!}">
+						</div>
+						<div class="form-group">
+							<input onchange="choosMaxLength('${pr.exampleId}');" class="form-control" id="${pr.exampleId}maxLength" placeholder="最大长度" value="${pr.maxLength!}">
+						</div>
+						<div id = "div-example-${pr.exampleId}" class="form-group">
+							<input class="form-control" id="${pr.exampleId}_parameterExample" placeholder="示例" value="${pr.parameterExample!}">
+						</div>
+						<div class="form-group">
+							<span style="margin-left:0px;"><b>是否必须 :</b></span> <input type="radio" name="${pr.exampleId}isMust" checked="checked" value="1">必须 <input type="radio" name="${pr.exampleId}isMust" value="0">可选
+						</div>
+
+						 
+						<button type="button" onclick="saveEaxmpleRetur('${pr.exampleId}');" class="btn btn-default">确定</button>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<button onclick="colse_div('${pr.exampleId}')" type="button" class="btn btn-default">取消</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+ 
+<script type="text/javascript">
+  function chooseDataType(select,exampleId) {
+
+		var dataType = $(select).val();
+		if (dataType != "String") {
+			$("#"+exampleId+"minLength").addClass("div-display");
+			$("#"+exampleId+"maxLength").addClass("div-display");
+		} else {
+			$("#"+exampleId+"minLength").removeClass("div-display");
+			$("#"+exampleId+"maxLength").removeClass("div-display");
+		}
+	}
+  
+  function choosMaxLength(exampleId) {
+
+		var maxLength = $("#"+exampleId+"maxLength").val();
+		var textarea = '<textarea id="'+exampleId+'_parameterExample" class="form-control" rows="3"></textarea>';
+		var inputString = '<input id="'+exampleId+'_parameterExample" class="form-control" placeholder=" ">';
+
+		$("#div-example-"+exampleId).children("input").remove();
+		$("#div-example-"+exampleId).children("textarea").remove();
+		if (maxLength >45) {
+			$("#div-example-"+exampleId).append(textarea);
+		} else {
+			$("#div-example-"+exampleId).append(inputString);
+		}
+	}
+  
+  function colse_div(exampleId){
+	  
+	  //$("#"+exampleId+"-div").addClass("div-display");
+	  $("#"+exampleId+"-div").empty();
+	  $("#"+exampleId+"-div").addClass("div-display");
+  }
+</script>

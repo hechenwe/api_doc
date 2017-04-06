@@ -1,0 +1,102 @@
+<p><small>接口URL : <a>${interfac.url}</a></small></p>
+<p><small>请求方式 : <a>${interfac.requestType}</a></small></p>
+<p><small>参数类型 : <a>${interfac.parameterFormat}</a></small></p>
+<p><small>返回数据类型 : <a>${interfac.returnDataType}</a></small></p>
+<#if interfac.style=="REST">
+<p><small>风格 : REST</small></p>
+</#if>
+<div>
+	<#-- 参数 开始  -->
+	<hr  style="height: 1px; border: none; border-top: 1px dashed #B2B8BD;" />
+    <h6><img class="img" id="img_parameter_${interfac.interfacId}" onclick="openOrCloseParameter('${interfac.interfacId}','img_parameter_${interfac.interfacId}');" src="../images/left.png">&nbsp;&nbsp; <b><a ondblclick="openOrCloseParameter('${interfac.interfacId}','img_parameter_${interfac.interfacId}');">参数 :</a></b>&nbsp;&nbsp;</h6>
+	 
+	<#-- 参数table -->
+	<#if interfac.parameterFormat =="JSON"> 
+		<h6>
+					<textarea spellcheck="false"  data-key="${interfac.interfacId}" data-toggle="context" data-target="#context-menu" id="textarea-${interfac.interfacId}"    style="width:99.4%" name="jsonString"   class="textarea-js textarea form-control-textarea" rows="5">${interfac.jsonParameters!}</textarea>
+					<br>
+					<p style="margin-left: 0px; margin-right: 16px;" align="right">
+						 <a onclick="formatJson('textarea-${interfac.interfacId}');"><small id="small_textarea-${interfac.interfacId}">格式化JSON</small></a> 
+					</p>
+		</h6>
+		    <h6>参数说明:</h6>
+			<#include "../parameter/table_parameter.html"/> 
+			<div class="div-display" id="div_parameter${interfac.interfacId}">
+			<#include "../parameter/add_parameter.html"/>
+			</div>	 
+				 
+	<#else> 
+			<#include "../parameter/table_parameter.html"/>
+			<div class="div-display" id="div_parameter${interfac.interfacId}">
+			<#include "../parameter/add_parameter.html"/>
+			</div>
+			<div id="up-parameter${interfac.interfacId}"></div>
+	</#if>
+	<#--添加参数的域 -->
+	<div class="div-display" id="div_parameter_constraint_${interfac.interfacId}">
+	
+	<#include "../parameter_constraint/add_parameter_constraint.html"/></div>
+	<#-- 参数  结束 -->
+
+	<#--  返回示例  开始 -->
+    <div>
+    	<span style="height:1px;">&nbsp;</span>
+    	<hr style="height: 1px; border: none; border-top: 1px dashed #B2B8BD;" />
+    	<h6><img class="img" id="img_example_${interfac.interfacId}" onclick="openOrCloseExample('${interfac.interfacId}','img_example_${interfac.interfacId}')" src="../images/left.png">&nbsp;&nbsp; <b><a ondblclick="openOrCloseExample('${interfac.interfacId}','img_example_${interfac.interfacId}')">返回示例 :</a></b>&nbsp;&nbsp;</h6>
+    </div>
+
+	<#include "../example/add_example.html"/>
+	<#--  添加返回示例 -->
+
+	<#------------------- 返回值示例 ---------------结束 -->
+
+	<div class="col-lg-12" id="div-exam-${interfac.interfacId}"></div>
+	
+	<#include "../parameter_return/table_return_example.html"/>
+	<#-- 返回示例模块 -->
+	<div class="span-4" id="div-example${interfac.interfacId}"></div>
+	
+    <#-- 试一试 -->
+    <hr style="height: 1px; border: none; border-top: 1px dashed #B2B8BD;" />
+	<h6>
+	<b>
+	<img class="img" id="img_try_${interfac.interfacId}" onclick="openOrCloseTry('${interfac.interfacId}','img_try_${interfac.interfacId}')" src="../images/left.png">&nbsp;&nbsp;<a ondblclick="openOrCloseTry('${interfac.interfacId}','img_try_${interfac.interfacId}')"> <font color="#FFAA2F">试一试</font></a>
+	</b>
+	</h6>
+	
+	<#include "../com/try.html"/>
+	<#-- 试一试 -->
+
+</div>
+
+<ul id="json-parameter-ul-id" hidden="hidden">
+	<li><a onclick="saveJsonParameter();">保存</a></li>
+	<li><a onclick="toAddParameter();">添加参数说明</a></li>
+	 
+</ul>
+ 
+
+<script type="text/javascript">
+	//右键菜单 --模块  
+	
+	function jsonParameterMousedown(){
+		$('.textarea-js').mousedown(function(e) {
+			if (3 == e.which) { //这 是右键单击事件
+				var lis = $("#json-parameter-ul-id").html();
+				var ul = $("#context-menu-ul");
+				ul.empty();
+				ul.append(lis);
+				
+				  var key = $(this).attr("data-key");
+	      		  $("#context-menu").attr("data-key",key);
+			}
+		});
+	}
+	
+	
+	
+	jsonParameterMousedown();
+	parameterMousedown();
+	 
+</script>
+

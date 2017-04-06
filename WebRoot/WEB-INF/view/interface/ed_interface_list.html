@@ -1,0 +1,80 @@
+
+<div style="margin-left: 30px;">
+	<div id="div-intface-${moduleId}">
+		<#if interfaces ??>            <#-- 接口 if-->
+		<#list interfaces as interfac ><#-- 接口 list-->
+		    <div id = "div-interfac-${interfac.interfacId}">
+		    <#if interfac_index == 0>
+		    <h5 class="data-h5" data-key="${interfac.interfacId}:${interfac.weight}:0:1:${interfac.parameterFormat}" data-toggle="context" data-target="#context-menu" id="h5-${interfac.interfacId}">
+			<img class="img" id="img_interfac_${interfac.interfacId}" onclick="openOrColseInterfac('${interfac.interfacId}')" src="../images/left.png">&nbsp;&nbsp;<img src="../images/I.png"><a ondblclick="openOrColseInterfac('${interfac.interfacId}')">${interfac.interfacName}</a> 
+		    <#elseif interfac_has_next>
+		    <h5 class="data-h5" data-key="${interfac.interfacId}:${interfac.weight}:1:1:${interfac.parameterFormat}" data-toggle="context" data-target="#context-menu" id="h5-${interfac.interfacId}">
+			<img class="img" id="img_interfac_${interfac.interfacId}" onclick="openOrColseInterfac('${interfac.interfacId}')" src="../images/left.png">&nbsp;&nbsp;<img src="../images/I.png"><a ondblclick="openOrColseInterfac('${interfac.interfacId}')">${interfac.interfacName}</a> 
+		    <#else>
+		    <h5 class="data-h5" data-key="${interfac.interfacId}:${interfac.weight}:1:0:${interfac.parameterFormat}" data-toggle="context" data-target="#context-menu" id="h5-${interfac.interfacId}">
+			<img class="img" id="img_interfac_${interfac.interfacId}" onclick="openOrColseInterfac('${interfac.interfacId}'" src="../images/left.png">&nbsp;&nbsp;<img src="../images/I.png"><a ondblclick="openOrColseInterfac('${interfac.interfacId}')">${interfac.interfacName}</a> 
+		    </#if>
+			</h5>
+				<div id="interfac${interfac.interfacId}" class="div-display">
+				<#--修改详细-->
+				</div>
+				<hr id="hr-${interfac.interfacId}" style="height: 1px; border: none; border-top: 1px solid #337ab7;" />
+		 </div>
+		 </#list>                      <#-- 接口list-->
+		 </#if>                        <#-- 接口if-->
+	</div>
+	 
+	<div>
+		<div style="height: 15px;"></div>
+		<div class="div-display" style="margin-left: 12px;" id="div_interfac${moduleId}">
+		 
+		</div>
+	</div>
+    
+</div>
+
+
+<ul id="interface-ul-id" hidden="hidden">
+	<li><a onclick="editInterface();">修改接口</a></li>
+	<li><a onclick="deleteInterface();">删除接口 </a></li>
+	<li id="toAddParameter" ><a onclick="toAddParameter();">添加参数</a></li>
+	<!-- <li><a onclick="openOrColseEaxmple();">添加返回示例</a></li> -->
+	 
+	<li id="interfac_menu_up" hidden ="hidden"><a onclick="upInterface();">向上移动</a></li>
+	<li id="interfac_menu_down" hidden ="hidden"><a onclick="downInterface();">向下移动</a></li>
+</ul>
+
+<ul id="interface-json-ul-id" hidden="hidden">
+	<li><a onclick="editInterface();">修改接口</a></li>
+	<li><a onclick="deleteInterface();">删除接口 </a></li>
+	<!-- <li><a onclick="openOrColseEaxmple();">添加返回示例</a></li> -->
+</ul>
+ 
+
+<script type="text/javascript">
+	//右键菜单 --模块  
+	
+	function interfaceMousedown(){
+		$('.data-h5').mousedown(function(e) {
+			if (3 == e.which) { //这 是右键单击事件
+				  var key = $(this).attr("data-key");
+	      		  $("#context-menu").attr("data-key",key);
+	      		  var dataKeys = key.split(":");
+	      		  var parameterFormat = dataKeys[4];
+	      		  
+	      		  if(parameterFormat=="JSON"){
+				  var lis = $("#interface-json-ul-id").html();
+	      		  }else{
+				  var lis = $("#interface-ul-id").html();
+	      		  }
+				var ul = $("#context-menu-ul");
+				ul.empty();
+				ul.append(lis);
+			}
+		});
+	}
+	
+	
+	
+	interfaceMousedown();
+</script>
